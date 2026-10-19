@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101321">
+  <title>EMO Student Toolkit</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101321;
+      --panel: #191e31;
+      --border: #303851;
+      --text: #f4f6ff;
+      --muted: #a6afc8;
+      --accent: #9b8cff;
+      --green: #6de0b0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 system-ui, sans-serif;
+    }
+
+    header {
+      padding: 26px 18px 18px;
+      background: linear-gradient(135deg, #242747, #171b2d);
+      border-bottom: 1px solid var(--border);
+    }
+
+    header, main, footer { max-width: 900px; margin-inline: auto; }
+    .brand { color: var(--accent); font-weight: 800; letter-spacing: 1px; }
+    h1 { margin: 6px 0; font-size: clamp(27px, 6vw, 38px); }
+    h2 { font-size: 19px; margin-top: 0; }
+    p { color: var(--muted); }
+    main { padding: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card {
+      min-width: 0;
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+      margin-bottom: 14px;
+    }
+    .wide { grid-column: 1 / -1; }
+    .metric { font-size: 28px; font-weight: 800; overflow-wrap: anywhere; }
+    .muted, small { color: var(--muted); }
+    label { display: block; margin: 10px 0 5px; color: var(--muted); font-size: 14px; }
+    input, button {
+      font: inherit;
+      border-radius: 10px;
+      padding: 11px 12px;
+    }
+    input {
+      width: 100%;
+      color: var(--text);
+      background: #101525;
+      border: 1px solid var(--border);
+    }
+    button {
+      border: 0;
+      background: var(--accent);
+      color: #111326;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    button.secondary {
+      color: var(--text);
+      background: #303851;
+    }
+    button.danger { background: #59303c; color: white; }
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 2px;
+    }
+    .form-row { display: flex; gap: 8px; align-items: end; }
+    .form-row > div { flex: 1; min-width: 0; }
+    .form-row button { flex-shrink: 0; }
+    .task {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .task input { width: 19px; height: 19px; }
+    .task span { flex: 1; overflow-wrap: anywhere; }
+    .task.done span { text-decoration: line-through; color: var(--muted); }
+    .task button { margin: 0; padding: 7px 10px; }
+    .bar { height: 8px; background: #303851; border-radius: 9px; overflow: hidden; }
+    .bar div { height: 100%; width: 0; background: var(--green); transition: width .2s; }
+    .status { color: var(--green); font-weight: 700; }
+    footer { padding: 8px 18px 28px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 520px) {
+      .grid { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+      .form-row { flex-wrap: wrap; }
+      .form-row button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">EMO • STUDENT TOOLS</div>
+    <h1>Your semester, under control.</h1>
+    <p>Plan your work. Track your progress. Stay consistent.</p>
+    <small id="today"></small>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>📋 My tasks</h2>
+        <div class="metric" id="taskCount">0</div>
+        <p>Tasks completed</p>
+        <div class="bar"><div id="taskBar"></div></div>
+      </section>
+
+      <section class="card">
+        <h2>🎯 Attendance calculator</h2>
+        <label for="attended">Classes attended</label>
+        <input id="attended" type="number" min="0" step="1" value="0">
+        <label for="conducted">Total classes conducted</label>
+        <input id="conducted" type="number" min="0" step="1" value="0">
+        <button id="calcAttendance">Calculate attendance</button>
+        <p class="metric" id="attendanceResult">—</p>
+        <p id="attendanceAdvice" aria-live="polite">Enter your class counts.</p>
+      </section>
+
+      <section class="card">
+        <h2>📅 Exam countdown</h2>
+        <label for="examName">Exam name</label>
+        <input id="examName" maxlength="80" placeholder="e.g. Semester exam">
+        <label for="examDate">Exam date</label>
+        <input id="examDate" type="date">
+        <button id="saveExam">Save exam</button>
+        <div class="metric" id="examCount">Not set</div>
+        <p id="examLabel">Choose your exam date.</p>
+      </section>
+
+      <section class="card">
+        <h2>⏱️ Focus timer</h2>
+        <p>One focused session at a time.</p>
+        <div class="metric" id="timerDisplay">25:00</div>
+        <button id="startTimer">Start</button>
+        <button class="secondary" id="pauseTimer">Pause</button>
+        <button class="secondary" id="resetTimer">Reset</button>
+        <p id="timerMessage" aria-live="polite">Ready when you are.</p>
+      </section>
+
+      <section class="card wide">
+        <h2>✅ Task planner</h2>
+        <form id="taskForm" class="form-row">
+          <div>
+            <label for="taskInput">What do you need to do?</label>
+            <input id="taskInput" maxlength="120" required
+              placeholder="e.g. Revise Python loops">
+          </div>
+          <button type="submit">Add task +</button>
+        </form>
+        <div id="taskList" aria-live="polite"></div>
+        <p id="emptyTasks">Your next win starts with one task.</p>
+      </section>
+    </div>
+
+    <p class="muted">Your data stays in this browser on this device.
+      Clearing site data or switching browsers may erase it.</p>
+  </main>
+
+  <footer>
+    EMO Student Toolkit · v1.0 · Built for students, by students.
+  </footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const KEY = "emo-student-toolkit-v1";
+
+    const defaults = {
+      tasks: [],
+      attendance: { attended: 0, conducted: 0 },
+      exam: { name: "", date: "" }
+    };
+
+    function loadData() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(KEY));
+        if (!saved || typeof saved !== "object") return structuredClone(defaults);
+        return {
+          tasks: Array.isArray(saved.tasks)
+            ? saved.tasks.filter(t =>
+                t && typeof t.id === "string" &&
+                typeof t.text === "string" &&
+                typeof t.done === "boolean").slice(0, 200)
+            : [],
+          attendance: saved.attendance || defaults.attendance,
+          exam: saved.exam || defaults.exam
+        };
+      } catch {
+        return structuredClone(defaults);
+      }
+    }
+
+    let data = loadData();
+
+    function persist() {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(data));
+        return true;
+      } catch {
+        alert("Could not save data. Check your browser storage settings.");
+        return false;
+      }
+    }
+
+    $("today").textContent = new Date().toLocaleDateString(undefined, {
+      weekday: "long", day: "numeric", month: "long", year: "numeric"
+    });
+
+    function renderTasks() {
+      const list = $("taskList");
+      list.replaceChildren();
+
+      data.tasks.forEach(task => {
+        const row = document.createElement("div");
+        row.className = "task" + (task.done ? " done" : "");
+
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = task.done;
+        check.setAttribute("aria-label", "Mark task complete");
+        check.addEventListener("change", () => {
+          task.done = check.checked;
+          persist();
+          renderTasks();
+        });
+
+        const text = document.createElement("span");
+        text.textContent = task.text;
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "danger";
+        remove.textContent = "Delete";
+        remove.setAttribute("aria-label", "Delete " + task.text);
+        remove.addEventListener("click", () => {
+          data.tasks = data.tasks.filter(t => t.id !== task.id);
+          persist();
+          renderTasks();
+        });
+
+        row.append(check, text, remove);
+        list.append(row);
+      });
+
+      const total = data.tasks.length;
+      const done = data.tasks.filter(t => t.done).length;
+      $("taskCount").textContent = `${done} / ${total}`;
+      $("taskBar").style.width = total ? `${done / total * 100}%` : "0%";
+      $("emptyTasks").hidden = total > 0;
+    }
+
+    $("taskForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const field = $("taskInput");
+      const text = field.value.trim();
+      if (!text || data.tasks.length >= 200) {
+        if (data.tasks.length >= 200) alert("Maximum 200 tasks reached.");
+        return;
+      }
+
+      data.tasks.push({
+        id: Date.now().toString() + Math.random().toString(36).slice(2),
+        text,
+        done: false
+      });
+
+      if (persist()) {
+        field.value = "";
+        renderTasks();
+        field.focus();
+      } else {
+        data.tasks.pop();
+        renderTasks();
+      }
+    });
+
+    $("attended").value = data.attendance.attended;
+    $("conducted").value = data.attendance.conducted;
+
+    $("calcAttendance").addEventListener("click", () => {
+      const a = Number($("attended").value);
+      const c = Number($("conducted").value);
+
+      if (!Number.isInteger(a) || !Number.isInteger(c) ||
+          a < 0 || c < 0 || a > c) {
+        $("attendanceResult").textContent = "Invalid";
+        $("attendanceAdvice").textContent =
+          "Use whole numbers; attended classes cannot exceed conducted classes.";
+        return;
+      }
+
+      data.attendance = { attended: a, conducted: c };
+      persist();
+
+      if (c === 0) {
+        $("attendanceResult").textContent = "—";
+        $("attendanceAdvice").textContent = "Enter conducted classes above zero.";
+        return;
+      }
+
+      const pct = a / c * 100;
+      $("attendanceResult").textContent = pct.toFixed(1) + "%";
+
+      if (pct >= 75) {
+        $("attendanceAdvice").textContent =
+          "You are at or above 75%. Check your college's actual rules.";
+      } else {
+        const needed = Math.ceil((0.75 * c - a) / 0.25);
+        $("attendanceAdvice").textContent =
+          `Below 75%. Attend the next ${needed} consecutive classes to reach 75%, assuming no more absences.`;
+      }
+    });
+
+    function renderExam() {
+      $("examName").value = data.exam.name;
+      $("examDate").value = data.exam.date;
+
+      if (!data.exam.date) {
+        $("examCount").textContent = "Not set";
+        $("examLabel").textContent = "Choose your exam date.";
+        return;
+      }
+
+      const target = new Date(data.exam.date + "T00:00:00");
+      if (Number.isNaN(target.getTime())) return;
+
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const days = Math.round((target - now) / 86400000);
+
+      $("examCount").textContent = days > 0 ? `${days} days` :
+        days === 0 ? "Today!" : `${Math.abs(days)} days ago`;
+      $("examLabel").textContent = data.exam.name || "Your exam";
+    }
+
+    $("saveExam").addEventListener("click", () => {
+      const name = $("examName").value.trim();
+      const date = $("examDate").value;
+      if (!date || Number.isNaN(new Date(date + "T00:00:00").getTime())) {
+        alert("Please select a valid exam date.");
+        return;
+      }
+      data.exam = { name, date };
+      if (persist()) renderExam();
+    });
+
+    let remaining = 25 * 60;
+    let interval = null;
+
+    function renderTimer() {
+      const mins = Math.floor(remaining / 60);
+      const secs = remaining % 60;
+      $("timerDisplay").textContent =
+        `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    $("startTimer").addEventListener("click", () => {
+      if (interval !== null || remaining <= 0) return;
+      $("timerMessage").textContent = "Focus mode on.";
+      interval = setInterval(() => {
+        remaining--;
+        renderTimer();
+
+        if (remaining <= 0) {
+          clearInterval(interval);
+          interval = null;
+          $("timerMessage").textContent = "Session complete. Take a break!";
+        }
+      }, 1000);
+    });
+
+    $("pauseTimer").addEventListener("click", () => {
+      if (interval !== null) clearInterval(interval);
+      interval = null;
+      $("timerMessage").textContent = "Timer paused.";
+    });
+
+    $("resetTimer").addEventListener("click", () => {
+      if (interval !== null) clearInterval(interval);
+      interval = null;
+      remaining = 25 * 60;
+      renderTimer();
+      $("timerMessage").textContent = "Ready when you are.";
+    });
+
+    renderTasks();
+    renderExam();
+    renderTimer();
+  </script>
+</body>
+</html>
