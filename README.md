@@ -1,56 +1,84 @@
+🎓 EMO Student Toolkit
 
-# EMO Student Toolkit 🎓
+A simple, mobile-friendly productivity toolkit built for students.
 
-A lightweight, mobile-friendly student productivity dashboard built with vanilla HTML, CSS, and JavaScript.
+EMO Student Toolkit helps students organize their daily tasks, track attendance, prepare for exams, and stay focused — all in one place.
 
-## Features
+✨ Features
 
-- Task planner with completion tracking
-- Attendance percentage calculator
-- Exam countdown
-- 25-minute focus timer
-- Local browser storage
-- Responsive mobile layout
+- ✅ Task Planner — Add, manage, and complete daily tasks.
+- 🚦 Priority Management — Organize tasks by High, Medium, and Low priority.
+- 📅 Deadline Tracking — Set due dates and identify overdue tasks.
+- 🎯 Attendance Calculator — Calculate attendance percentage and check attendance progress.
+- ⏳ Exam Countdown — Track the time remaining until upcoming exams.
+- 🍅 Focus Timer — Use a focused study session timer to improve productivity.
+- 💾 Local Storage — Keep your tasks and saved information in your browser.
+- 📱 Responsive Design — Use the toolkit on mobile phones, tablets, and desktops.
 
-## Tech Stack
+🛠️ Built With
 
 - HTML5
 - CSS3
-- Vanilla JavaScript
-- Browser localStorage
+- JavaScript
+- Browser Local Storage
 
-## Run Locally
+🚀 Getting Started
 
-Open `index.html` in a modern web browser.
+No installation or build tools are required.
 
-No framework, package installation, API key, or backend required.
+1. Clone or download this repository.
+2. Open "Index.html" in your web browser.
+3. Start organizing your study routine!
 
-## Deploy with GitHub Pages
+Run Locally
 
-1. Open your repository's Settings.
-2. Select Pages.
-3. Under Build and deployment, choose Deploy from a branch.
-4. Select `main` and `/ (root)`.
-5. Save and wait for deployment.
+git clone https://github.com/Emomohit/EMO-Student-Toolkit.git
+cd EMO-Student-Toolkit
 
-## Privacy and Limitations
+Then open "Index.html" in your browser.
 
-Tasks and settings are stored locally in the browser.
-They are not synced across devices.
+📂 Project Structure
 
-Do not use this tool as an official attendance record.
-Confirm attendance requirements with your institution.
+EMO-Student-Toolkit/
+├── Index.html
+└── README.md
 
-The focus timer may be delayed when the browser is in
-the background or the device is sleeping.
+🔒 Privacy
 
-## Roadmap
+The toolkit stores supported data locally in your browser using Local Storage. Your saved data does not automatically synchronize across different devices or browsers.
 
-- [ ] Task priority and due dates
-- [ ] Export and import tasks
-- [ ] Automated tests
-- [ ] Optional installable PWA support
+Avoid using shared or public devices for personal information.
 
-## License
+🗺️ Roadmap
 
-MIT
+Planned improvements:
+
+- [ ] Dark mode
+- [ ] Weekly study planner
+- [ ] Subject-wise study tracking
+- [ ] Improved task filtering and search
+- [ ] Export and backup options
+- [ ] Optional cloud synchronization
+
+🤝 Contributing
+
+Contributions, suggestions, bug reports, and feature ideas are welcome!
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make and test your changes.
+4. Submit a pull request.
+
+👨‍💻 Developer
+
+Mohit Ahirwar — EMoMoHiT
+
+GitHub: "@Emomohit" (https://github.com/Emomohit)
+
+Project: "EMO Student Toolkit" (https://github.com/Emomohit/EMO-Student-Toolkit)
+
+---
+
+Built with ❤️ to make student life more organized and productive.
+
+⭐ If you find this project useful, consider giving it a star!
